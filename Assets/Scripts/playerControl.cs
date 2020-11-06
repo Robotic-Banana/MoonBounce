@@ -116,12 +116,12 @@ public class playerControl : MonoBehaviourPunCallbacks, IPunObservable {
 			//this is our character since it's in writing state
 			// stream.SendNext()
 
-			stream.SendNext (ourDamageableEntity.health);
+			// stream.SendNext (ourDamageableEntity.health);
 		} else {
 			//this is a network player because it's in Read, not write
 			//stream.ReceiveNext();
 
-			ourDamageableEntity.health = (int) stream.ReceiveNext ();
+			// ourDamageableEntity.health = (int) stream.ReceiveNext ();
 		}
 	}
 

@@ -8,6 +8,9 @@ public class Weapon : MonoBehaviour {
     public int damage;
 
     public float fireRate;
+
+    public playerControl weaponOwner;
+
     private float remainingTimeTillFire = 0f;
 
     public GameObject weaponTrail;

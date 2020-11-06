@@ -7,6 +7,8 @@ public class Projectile : MonoBehaviour
     public float lifespan;
     public int damage;
 
+    public playerControl initiatingPlayer;
+
     // Update is called once per frame
     void Update()
     {
@@ -24,6 +26,8 @@ public class Projectile : MonoBehaviour
 
         DamageableEntity d = collisionInfo.collider.GetComponent<DamageableEntity>();
         if(d != null){
+            // initiatingPlayer.DealDamage(d, damage);
+
             d.TakeDamage(damage);
         }
     }

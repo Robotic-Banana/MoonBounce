@@ -15,6 +15,7 @@ public class ProjectileWeapon : Weapon
         Projectile p = newProjectile.AddComponent<Projectile>();
         p.lifespan = 5f;
         p.damage = damage;
+        p.initiatingPlayer = weaponOwner;
 
         GameObject.Instantiate(weaponTrail, newProjectile.transform.position, Quaternion.identity, newProjectile.transform);
         

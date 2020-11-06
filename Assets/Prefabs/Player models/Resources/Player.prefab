@@ -455,6 +455,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 6936547463220012162}
     m_Modifications:
+    - target: {fileID: 1353556411, guid: cf0d2db1a8df5fe468789be19a636576, type: 3}
+      propertyPath: weaponOwner
+      value: 
+      objectReference: {fileID: 5204186845763663180}
     - target: {fileID: 8719357710660770349, guid: cf0d2db1a8df5fe468789be19a636576,
         type: 3}
       propertyPath: m_Name
@@ -602,6 +606,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8125545860157742250, guid: ac7c42b3f781c2941b784e4f3b096982,
+        type: 3}
+      propertyPath: weaponOwner
+      value: 
+      objectReference: {fileID: 5204186845763663180}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ac7c42b3f781c2941b784e4f3b096982, type: 3}
 --- !u!4 &9051494518707074948 stripped
@@ -694,11 +703,21 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2952545658925911168, guid: 34b1853b68e4dc846be016fe25cff96f,
+        type: 3}
+      propertyPath: weaponOwner
+      value: 
+      objectReference: {fileID: 5204186845763663180}
     - target: {fileID: 5038799776641622754, guid: 34b1853b68e4dc846be016fe25cff96f,
         type: 3}
       propertyPath: fireRate
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 8295768553644499463, guid: 34b1853b68e4dc846be016fe25cff96f,
+        type: 3}
+      propertyPath: weaponOwner
+      value: 
+      objectReference: {fileID: 5204186845763663180}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 34b1853b68e4dc846be016fe25cff96f, type: 3}
 --- !u!4 &5309013511468181781 stripped

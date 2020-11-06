@@ -12,9 +12,16 @@ namespace com.RoboticBanana.MoonBounce {
 
         public GameObject playerPrefab;
 
+        public GameObject DummyBoi;
+
         // Start is called before the first frame update
         void Start () {
             Instance = this;
+
+            if (PhotonNetwork.IsMasterClient) {
+                PhotonNetwork.InstantiateRoomObject (DummyBoi.name, new Vector3 (0, 1002, -666), Quaternion.Euler (-35, 0, 0));
+
+            }
 
             if (playerPrefab == null) {
                 Debug.LogError ("<Color=Red><a>Missing player prefab</a></Color>");
