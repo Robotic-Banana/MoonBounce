@@ -4,8 +4,7 @@ using UnityEngine;
 
 public class ProjectileWeapon : Weapon
 {
-
-    protected override void FireWeapon(){
+    public override void FireWeapon(){
         base.FireWeapon();
 
         GameObject newProjectile = new GameObject();

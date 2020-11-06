@@ -1,9 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Photon.Pun;
+using Photon.Realtime;
 using UnityEngine;
 
-public class Weapon : MonoBehaviour
-{
+public class Weapon : MonoBehaviour {
     public int damage;
 
     public float fireRate;
@@ -11,32 +12,21 @@ public class Weapon : MonoBehaviour
 
     public GameObject weaponTrail;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
     // Update is called once per frame
-    void Update()
-    {
-        if(remainingTimeTillFire > 0){
+    public virtual void Update () {
+        if (remainingTimeTillFire > 0f) {
             remainingTimeTillFire -= Time.deltaTime;
 
         }
-
-        if(Input.GetMouseButton(0)){
-            if(remainingTimeTillFire <= 0){
-                FireWeapon();
-
-                remainingTimeTillFire = fireRate;
-
-            }
-        }
-        
     }
 
-    protected virtual void FireWeapon(){
+    public bool PullTheoreticalTrigger () {
+        return remainingTimeTillFire <= 0f;
+
+    }
+
+    public virtual void FireWeapon () {
+        remainingTimeTillFire = this.fireRate;
 
     }
 }

@@ -1,8 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using com.RoboticBanana.MoonBounce;
+using Photon.Pun;
+using Photon.Realtime;
 using UnityEngine;
 
-public class playerControl : MonoBehaviour {
+[RequireComponent (typeof (DamageableEntity))]
+public class playerControl : MonoBehaviourPunCallbacks, IPunObservable {
+
+	public static GameObject LocalPlayerInstance;
 
 	public Camera ourCamera;
 	public Rigidbody ourRigidbody;
@@ -21,27 +27,66 @@ public class playerControl : MonoBehaviour {
 	public float sprintModifier;
 	public Vector3 maxSpeed;
 
-	public bool isLocalPlayer = true;
 	private Vector3 movementThisFrame;
+
+	public Weapon currentWeapon;
+	public WeaponInventory ourWeaponInventory;
 
 	public GravityAffectedPlayer ourGravityPlayer;
 
+	public DamageableEntity ourDamageableEntity;
+
+	private bool cursorLockstate = true;
+
+	void Awake () {
+		if (photonView.IsMine) {
+			playerControl.LocalPlayerInstance = this.gameObject;
+			ourDamageableEntity = GetComponent<DamageableEntity> ();
+
+		}
+
+		DontDestroyOnLoad (this.gameObject);
+
+	}
+
 	// Use this for initialization
 	void Start () {
-		Cursor.lockState = CursorLockMode.Locked;
-		Cursor.visible = false;
-
+		if (!photonView.IsMine) {
+			Cursor.lockState = CursorLockMode.Locked;
+			Cursor.visible = false;
+		}
 	}
 
 	// Update is called once per frame
 	void Update () {
+		if (Input.GetKey (KeyCode.Q)) Application.Quit ();
 
-		if (!isLocalPlayer) {
+		if (Input.GetKey (KeyCode.Escape)) {
+			cursorLockstate = !cursorLockstate;
+		}
 
+		if (Input.GetKey (KeyCode.P) || cursorLockstate != true) {
+			Cursor.lockState = CursorLockMode.None;
+			cursorLockstate = false;
+			Cursor.visible = true;
+
+		} else if (cursorLockstate == true) {
+			Cursor.lockState = CursorLockMode.Locked;
+			Cursor.visible = false;
+
+		}
+
+		if (!photonView.IsMine) {
 			ourCamera.enabled = false;
+			ourCamera.GetComponent<AudioListener> ().enabled = false;
+			ourRigidbody.isKinematic = true;
 
-			return;
+			if (PhotonNetwork.IsConnected == true) return; //during development, we may want to test this prefab without being connected. In a dummy scene for example, just to create and validate code that is not related to networking features
 
+		}
+
+		if (Input.GetMouseButton (0)) {
+			TryFireWeapon ();
 		}
 
 		movementThisFrame = new Vector3 (Input.GetAxis ("Horizontal"), 0, Input.GetAxis ("Vertical"));
@@ -60,10 +105,28 @@ public class playerControl : MonoBehaviour {
 
 		}
 
+		if (ourDamageableEntity.health <= 0) {
+			GameManager.Instance.LeaveRoom ();
+
+		}
+	}
+
+	public void OnPhotonSerializeView (PhotonStream stream, PhotonMessageInfo info) {
+		if (stream.IsWriting) {
+			//this is our character since it's in writing state
+			// stream.SendNext()
+
+			stream.SendNext (ourDamageableEntity.health);
+		} else {
+			//this is a network player because it's in Read, not write
+			//stream.ReceiveNext();
+
+			ourDamageableEntity.health = (int) stream.ReceiveNext ();
+		}
 	}
 
 	void FixedUpdate () {
-
+		if (!photonView.IsMine) return;
 		Vector3 oldVel = transform.InverseTransformDirection (ourRigidbody.velocity);
 
 		Vector3 newVel = new Vector3 (movementThisFrame.x, 0, movementThisFrame.z);
@@ -108,5 +171,17 @@ public class playerControl : MonoBehaviour {
 
 		return hit.collider;
 
+	}
+
+	private void TryFireWeapon () {
+		if (ourWeaponInventory.weaponList[ourWeaponInventory.activeWeaponIndex].PullTheoreticalTrigger ()) {
+			photonView.RPC ("FireWeapon", RpcTarget.All);
+
+		}
+	}
+
+	[PunRPC]
+	public void FireWeapon () {
+		ourWeaponInventory.weaponList[ourWeaponInventory.activeWeaponIndex].FireWeapon ();
 	}
 }

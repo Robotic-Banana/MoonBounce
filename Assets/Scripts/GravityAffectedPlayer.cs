@@ -16,8 +16,12 @@ public class GravityAffectedPlayer : GravityAffectedEntity {
 
     private playerControl ourPlayer;
 
-    //https://forum.unity.com/threads/character-align-to-surface-normal.33987
     void Start () {
+        ourPlayer = GetComponent<playerControl> ();
+        ourPlayer.ourGravityPlayer = this;
+
+        if (!ourPlayer.photonView.IsMine) return;
+
         if (planetCollider == null) {
             centre = transform;
             radius = 0;
@@ -28,36 +32,21 @@ public class GravityAffectedPlayer : GravityAffectedEntity {
 
         }
 
-        ourPlayer = GetComponent<playerControl> ();
-        ourPlayer.ourGravityPlayer = this;
-        //starting position at north pole
-        // transform.position = centre.position + new Vector3(0,radius+height,0);
     }
 
     public override void FixedUpdate () {
-        // base.FixedUpdate ();
 
-        //translate based on input     
-        // float inputMag  = Input.GetAxis("Vertical")*translationSpeed*Time.deltaTime;
-        // transform.position += transform.forward * inputMag;
-        //snap position to radius + height (could also use raycasts)
-        // Vector3 targetPosition = transform.position - centre.position;
-        // float ratio = (radius + height) / targetPosition.magnitude;
-        // targetPosition.Scale( new Vector3(ratio, ratio, ratio) );
-        // transform.position = targetPosition + centre.position;
-        //calculate planet surface normal                      
+        if (!ourPlayer.photonView.IsMine || transform == null || centre == null) return;
+
         Vector3 surfaceNormal = transform.position - centre.position;
         surfaceNormal.Normalize ();
-        //GameObject's heading
-        // float headingDeltaAngle = Input.GetAxis("Horizontal") * Time.deltaTime * rotationSpeed;
-        // Quaternion headingDelta = Quaternion.AngleAxis(headingDeltaAngle, transform.up);
-        //align with surface normal
+
         transform.rotation = Quaternion.FromToRotation (transform.up, surfaceNormal) * transform.rotation;
-        //apply heading rotation
-        // transform.rotation = headingDelta * transform.rotation;
 
     }
     public override void SetGravityObject (GameObject go) {
+        if (go.transform == null) return;
+
         base.SetGravityObject (go);
         planetCollider = go.transform.GetComponent<SphereCollider> ();
         radius = planetCollider.radius * planetCollider.transform.localScale.y;

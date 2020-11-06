@@ -3,18 +3,23 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class WeaponInventory : MonoBehaviour {
-    public GameObject weaponOne;
-    public GameObject weaponTwo;
+    public Weapon[] weaponList;
+    public int activeWeaponIndex = 0;
 
-    // Update is called once per frame
-    void Update () {
-        if (Input.GetKeyDown (KeyCode.Alpha1)) {
-            weaponOne.SetActive (true);
-            weaponTwo.SetActive (false);
+    void Start () {
+        SwapWeapon (activeWeaponIndex);
 
-        } else if (Input.GetKeyDown (KeyCode.Alpha2)) {
-            weaponTwo.SetActive (true);
-            weaponOne.SetActive (false);
+    }
+    
+    public void SwapWeapon (int index) {
+        for (int i = 0; i < weaponList.Length; i++) {
+            if (i == index) {
+                weaponList[i].gameObject.SetActive (true);
+
+            } else {
+                weaponList[i].gameObject.SetActive (false);
+
+            }
         }
     }
 }
