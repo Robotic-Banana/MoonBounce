@@ -4,6 +4,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 namespace com.RoboticBanana.MoonBounce {
     public class GameManager : MonoBehaviourPunCallbacks {
@@ -13,6 +14,11 @@ namespace com.RoboticBanana.MoonBounce {
         public GameObject playerPrefab;
 
         public GameObject DummyBoi;
+
+        public Transform[] RespawnPoints;
+
+        public GameObject respawnPanel;
+        public Text respawnText;
 
         // Start is called before the first frame update
         void Start () {
@@ -31,7 +37,9 @@ namespace com.RoboticBanana.MoonBounce {
 
                 if (playerControl.LocalPlayerInstance == null) {
                     Debug.LogFormat ("We are instantiating local player from {0}", SceneManagerHelper.ActiveSceneName);
-                    PhotonNetwork.Instantiate (playerPrefab.name, new Vector3 (-1, 995, -675), Quaternion.identity, 0);
+
+                    Transform spawnLocation = PickRespawnPoint();
+                    PhotonNetwork.Instantiate (playerPrefab.name, spawnLocation.transform.position, Quaternion.identity, 0);
 
                 } else {
                     Debug.LogFormat ("Ignoring scene load for {0}", SceneManagerHelper.ActiveSceneName);
@@ -78,12 +86,33 @@ namespace com.RoboticBanana.MoonBounce {
 
         public override void OnLeftRoom () {
             SceneManager.LoadScene (0);
+
         }
 
         public void LeaveRoom () {
             Cursor.lockState = CursorLockMode.None;
 
             PhotonNetwork.LeaveRoom ();
+
+        }
+
+        public Transform PickRespawnPoint () {
+            int chosenPoint = Random.Range (0, RespawnPoints.Length);
+
+            return RespawnPoints[chosenPoint];
+
+        }
+
+        public void UpdateRespawnGraphic (int number) {
+            if (number > 0) {
+                respawnPanel.SetActive (true);
+
+            } else {
+                respawnPanel.SetActive (false);
+
+            }
+
+            respawnText.text = (number).ToString ();
 
         }
     }

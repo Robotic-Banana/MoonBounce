@@ -8,7 +8,7 @@ public class BouncePad : MonoBehaviour
     {
         Rigidbody collisionRigidbody = collisionInfo.gameObject.GetComponent<Rigidbody>();
         if(collisionRigidbody != null){
-            collisionRigidbody.AddForce(transform.up * 20, ForceMode.VelocityChange);
+            collisionRigidbody.AddForce(transform.up * 40, ForceMode.VelocityChange);
 
         }
     }

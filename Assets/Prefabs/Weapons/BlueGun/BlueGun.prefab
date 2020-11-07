@@ -45,8 +45,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd1632bc089a39b479da81ede9533974, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 2
-  fireRate: 0.25
+  damage: 3
+  fireRate: 0.05
+  weaponOwner: {fileID: 0}
   weaponTrail: {fileID: 4001935755949152604, guid: 94b36bed1f19b714291463f274aba5be,
     type: 3}
 --- !u!1 &5467383114695889210

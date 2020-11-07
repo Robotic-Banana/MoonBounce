@@ -13,7 +13,7 @@ public class ProjectileWeapon : Weapon
         newProjectile.layer = LayerMask.NameToLayer("Bullet");
         
         Projectile p = newProjectile.AddComponent<Projectile>();
-        p.lifespan = 5f;
+        p.lifespan = 10f;
         p.damage = damage;
         p.initiatingPlayer = weaponOwner;
 
@@ -21,7 +21,7 @@ public class ProjectileWeapon : Weapon
         
         Rigidbody r = newProjectile.AddComponent<Rigidbody>();
         r.useGravity = false;
-        r.AddForce(transform.forward * 100, ForceMode.VelocityChange);
+        r.AddForce(transform.forward * 300, ForceMode.VelocityChange);
         newProjectile.AddComponent<GravityAffectedEntity>();
         SphereCollider s = newProjectile.AddComponent<SphereCollider>();
         s.radius = 0.1f;

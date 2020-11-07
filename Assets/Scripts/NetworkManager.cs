@@ -14,7 +14,7 @@ namespace com.RoboticBanana.MoonBounce {
 
         #region Private Fields
         /// game version is used to divide players between varying versions
-        string gameVersion = "1";
+        string gameVersion = "2";
         bool isConnecting;
         #endregion
 

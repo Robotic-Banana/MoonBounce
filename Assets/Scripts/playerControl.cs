@@ -4,6 +4,7 @@ using com.RoboticBanana.MoonBounce;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
+using UnityEngine.UI;
 
 [RequireComponent (typeof (DamageableEntity))]
 public class playerControl : MonoBehaviourPunCallbacks, IPunObservable {
@@ -13,6 +14,8 @@ public class playerControl : MonoBehaviourPunCallbacks, IPunObservable {
 	public Camera ourCamera;
 	public Rigidbody ourRigidbody;
 	public CapsuleCollider ourCollider;
+
+	public Text playerNicknameText;
 
 	public float MinimumY;
 	public float MaximumY;
@@ -45,6 +48,8 @@ public class playerControl : MonoBehaviourPunCallbacks, IPunObservable {
 
 		}
 
+		playerNicknameText.text = photonView.Owner.NickName;
+
 		DontDestroyOnLoad (this.gameObject);
 
 	}
@@ -59,6 +64,15 @@ public class playerControl : MonoBehaviourPunCallbacks, IPunObservable {
 
 	// Update is called once per frame
 	void Update () {
+		if (!photonView.IsMine) {
+			ourCamera.enabled = false;
+			ourCamera.GetComponent<AudioListener> ().enabled = false;
+			ourRigidbody.isKinematic = true;
+
+			if (PhotonNetwork.IsConnected == true) return; //during development, we may want to test this prefab without being connected. In a dummy scene for example, just to create and validate code that is not related to networking features
+
+		}
+
 		if (Input.GetKey (KeyCode.Q)) Application.Quit ();
 
 		if (Input.GetKey (KeyCode.Escape)) {
@@ -76,13 +90,12 @@ public class playerControl : MonoBehaviourPunCallbacks, IPunObservable {
 
 		}
 
-		if (!photonView.IsMine) {
-			ourCamera.enabled = false;
-			ourCamera.GetComponent<AudioListener> ().enabled = false;
-			ourRigidbody.isKinematic = true;
+		if (Input.GetKeyDown (KeyCode.Alpha1)) {
+			currentWeapon = ourWeaponInventory.SwapWeapon (0);
+		}
 
-			if (PhotonNetwork.IsConnected == true) return; //during development, we may want to test this prefab without being connected. In a dummy scene for example, just to create and validate code that is not related to networking features
-
+		if (Input.GetKeyDown (KeyCode.Alpha2)) {
+			currentWeapon = ourWeaponInventory.SwapWeapon (1);
 		}
 
 		if (Input.GetMouseButton (0)) {
@@ -116,12 +129,12 @@ public class playerControl : MonoBehaviourPunCallbacks, IPunObservable {
 			//this is our character since it's in writing state
 			// stream.SendNext()
 
-			// stream.SendNext (ourDamageableEntity.health);
+			stream.SendNext (ourWeaponInventory.activeWeaponIndex);
 		} else {
 			//this is a network player because it's in Read, not write
 			//stream.ReceiveNext();
 
-			// ourDamageableEntity.health = (int) stream.ReceiveNext ();
+			ourWeaponInventory.SwapWeapon((int) stream.ReceiveNext ());
 		}
 	}
 
@@ -133,22 +146,22 @@ public class playerControl : MonoBehaviourPunCallbacks, IPunObservable {
 
 		if (newVel == Vector3.zero) {
 			newVel = oldVel;
-			newVel.x /= -2;
+			newVel.x /= -4;
 			newVel.y = 0;
-			newVel.z /= -2;
+			newVel.z /= -4;
 		} else if (newVel.x == 0) {
-			newVel.x = oldVel.x / -2;
+			newVel.x = oldVel.x / -4;
 		} else if (newVel.z == 0) {
-			newVel.z = oldVel.z / -2;
+			newVel.z = oldVel.z / -4;
 		}
 
 		ourRigidbody.AddForce (transform.TransformDirection (newVel), ForceMode.VelocityChange);
 
 		newVel = transform.InverseTransformDirection (ourRigidbody.velocity);
-		if (newVel.x > 5) newVel.x = 5;
-		if (newVel.x < -5) newVel.x = -5;
-		if (newVel.z > 5) newVel.z = 5;
-		if (newVel.z < -5) newVel.z = -5;
+		if (newVel.x > 15) newVel.x = 15;
+		if (newVel.x < -15) newVel.x = -15;
+		if (newVel.z > 15) newVel.z = 15;
+		if (newVel.z < -15) newVel.z = -15;
 		ourRigidbody.velocity = transform.TransformDirection (newVel);
 
 		ourRigidbody.angularVelocity = Vector3.zero;
@@ -167,7 +180,7 @@ public class playerControl : MonoBehaviourPunCallbacks, IPunObservable {
 
 		RaycastHit hit;
 
-		Physics.Raycast (transform.position, ourGravityPlayer.planetCollider.transform.position - transform.position, out hit, 1.1f);
+		Physics.Raycast (transform.position, ourGravityPlayer.planetCollider.transform.position - transform.position, out hit, 2f);
 
 		return hit.collider;
 
