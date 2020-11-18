@@ -119,7 +119,6 @@ public class playerControl : MonoBehaviourPunCallbacks, IPunObservable {
 
 		if (ourDamageableEntity.health <= 0) {
 			GameManager.Instance.LeaveRoom ();
-
 		}
 	}
 

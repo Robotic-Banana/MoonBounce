@@ -72,7 +72,7 @@ namespace com.RoboticBanana.MoonBounce {
         public override void OnConnectedToMaster () {
             if (isConnecting) {
                 Debug.Log ("ONCONNECTEDTOMASTER has been called");
-                // PhotonNetwork.AutomaticallySyncScene = true;
+                PhotonNetwork.AutomaticallySyncScene = true;
                 PhotonNetwork.JoinRandomRoom();
             }
         }
@@ -100,7 +100,7 @@ namespace com.RoboticBanana.MoonBounce {
         public override void OnJoinRandomFailed (short returnCode, string message) {
             Debug.Log ("Joined random failed, creating room");
 
-            PhotonNetwork.CreateRoom (PhotonNetwork.LocalPlayer.NickName + "'s Lobby", new RoomOptions { MaxPlayers = maxPlayersPerRoom });
+            PhotonNetwork.CreateRoom (null, new RoomOptions { MaxPlayers = maxPlayersPerRoom });
         }
 
         public override void OnJoinedRoom () {
@@ -131,7 +131,6 @@ namespace com.RoboticBanana.MoonBounce {
 
         #endregion
 
-        [PunRPC]
         public void StartGame()
         {
             PhotonNetwork.LoadLevel("GudgePlayground");
