@@ -131,13 +131,10 @@ namespace com.RoboticBanana.MoonBounce {
 
         #endregion
 
+        [PunRPC]
         public void StartGame()
         {
-            if (PhotonNetwork.IsMasterClient)
-            {
-                PhotonNetwork.LoadLevel("GudgePlayground");
-            }
-
+            PhotonNetwork.LoadLevel("GudgePlayground");
         }
         
 

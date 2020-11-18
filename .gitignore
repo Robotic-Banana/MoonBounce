@@ -42,7 +42,7 @@ ExportedObj/
 *.mdb
 *.opendb
 *.VC.db
-**/Photon/**/*.dll
+**/Photon/**/**/*.dll
 
 # Unity3D generated meta files
 *.pidb.meta

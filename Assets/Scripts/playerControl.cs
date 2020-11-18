@@ -51,7 +51,6 @@ public class playerControl : MonoBehaviourPunCallbacks, IPunObservable {
 		playerNicknameText.text = photonView.Owner.NickName;
 
 		DontDestroyOnLoad (this.gameObject);
-
 	}
 
 	// Use this for initialization
