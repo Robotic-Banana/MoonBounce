@@ -21,11 +21,10 @@ public class DamageableEntity : MonoBehaviourPunCallbacks, IPunObservable {
         if (ourParticleSystem != null && dying && !ourParticleSystem.isPlaying) {
             ourParticleSystem.Stop ();
             ourParticleSystem.Play (true);
-
         }
     }
 
-    public void TakeDamage (int damageAmount) {
+    public void TakeDamage (int damageAmount, string attackingPlayer) {
         if (dying) return;
 
         health -= damageAmount;

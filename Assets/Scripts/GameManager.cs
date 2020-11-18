@@ -48,10 +48,6 @@ namespace com.RoboticBanana.MoonBounce {
             }
         }
 
-        // Update is called once per frame
-        void Update () {
-
-        }
 
         void LoadGame () {
             if (!PhotonNetwork.IsMasterClient) {
@@ -66,7 +62,6 @@ namespace com.RoboticBanana.MoonBounce {
 
         public override void OnPlayerEnteredRoom (Player other) {
             Debug.LogFormat ("Nickname entered room: {0}", other.NickName);
-
             if (PhotonNetwork.IsMasterClient) {
                 // Debug.LogFormat ("Player entered room is Master Client: {0}", PhotonNetwork.IsMasterClient);
 
