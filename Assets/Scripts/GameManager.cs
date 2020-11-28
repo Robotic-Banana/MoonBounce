@@ -26,7 +26,6 @@ namespace com.RoboticBanana.MoonBounce {
 
             if (PhotonNetwork.IsMasterClient) {
                 PhotonNetwork.InstantiateRoomObject (DummyBoi.name, new Vector3 (0, 1002, -666), Quaternion.Euler (-35, 0, 0));
-
             }
 
             if (playerPrefab == null) {
@@ -48,15 +47,10 @@ namespace com.RoboticBanana.MoonBounce {
             }
         }
 
-        // Update is called once per frame
-        void Update () {
-
-        }
 
         void LoadGame () {
             if (!PhotonNetwork.IsMasterClient) {
                 Debug.LogError ("Error loading master photon client");
-
             }
 
             Debug.LogFormat ("Photon loading level with playercount {0}", PhotonNetwork.CurrentRoom.PlayerCount);
@@ -66,34 +60,19 @@ namespace com.RoboticBanana.MoonBounce {
 
         public override void OnPlayerEnteredRoom (Player other) {
             Debug.LogFormat ("Nickname entered room: {0}", other.NickName);
-
-            if (PhotonNetwork.IsMasterClient) {
-                // Debug.LogFormat ("Player entered room is Master Client: {0}", PhotonNetwork.IsMasterClient);
-
-                // LoadGame ();
-            }
         }
 
         public override void OnPlayerLeftRoom (Player otherPlayer) {
             Debug.LogFormat ("Nickname left room: {0}", PhotonNetwork.NickName);
-
-            if (PhotonNetwork.IsMasterClient) {
-                // Debug.LogFormat ("Player left rom and is master client: {0}", PhotonNetwork.IsMasterClient);
-
-                // LoadGame ();
-            }
         }
 
         public override void OnLeftRoom () {
             SceneManager.LoadScene (0);
-
         }
 
         public void LeaveRoom () {
             Cursor.lockState = CursorLockMode.None;
-
             PhotonNetwork.LeaveRoom ();
-
         }
 
         public Transform PickRespawnPoint () {

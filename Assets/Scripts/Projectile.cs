@@ -28,7 +28,7 @@ public class Projectile : MonoBehaviour
         if(d != null){
             // initiatingPlayer.DealDamage(d, damage);
 
-            d.TakeDamage(damage);
+            d.TakeDamage(damage, "");
         }
     }
 

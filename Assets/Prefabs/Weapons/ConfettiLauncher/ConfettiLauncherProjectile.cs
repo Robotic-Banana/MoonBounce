@@ -23,7 +23,7 @@ public class ConfettiLauncherProjectile : Projectile {
             if(d != null){
                 d.GetComponent<Rigidbody>().AddForce((d.transform.position - sphere.transform.position) * 10, ForceMode.Impulse);
 
-                d.TakeDamage(damage);
+                d.TakeDamage(damage , "");
 
             }
         }

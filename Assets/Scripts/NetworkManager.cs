@@ -1,8 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace com.RoboticBanana.MoonBounce {
     public class NetworkManager : MonoBehaviourPunCallbacks {
@@ -22,6 +22,10 @@ namespace com.RoboticBanana.MoonBounce {
 
         public GameObject progressLabel;
 
+        public GameObject lobbyUI;
+
+        public GameObject playerList;
+
         #region MonoBehaviour CallBacks
         void Awake () {
 
@@ -37,8 +41,9 @@ namespace com.RoboticBanana.MoonBounce {
         #region Public Methods
         public void Connect () {
 
-            progressLabel.SetActive (true);
+            // progressLabel.SetActive (true);
             controlPanel.SetActive (false);
+            lobbyUI.SetActive(true);
 
             if (PhotonNetwork.IsConnected) {
                 PhotonNetwork.JoinRandomRoom ();
@@ -51,6 +56,15 @@ namespace com.RoboticBanana.MoonBounce {
 
         }
 
+        public void Disconnect()
+        {
+            PhotonNetwork.LeaveRoom();
+            
+            progressLabel.SetActive (false);
+            controlPanel.SetActive (true);
+            lobbyUI.SetActive(false);
+        }
+
         #endregion
 
         #region MonoBehaviourPunCallbacks Callbacks
@@ -58,14 +72,24 @@ namespace com.RoboticBanana.MoonBounce {
         public override void OnConnectedToMaster () {
             if (isConnecting) {
                 Debug.Log ("ONCONNECTEDTOMASTER has been called");
-                PhotonNetwork.JoinRandomRoom ();
-
+                PhotonNetwork.AutomaticallySyncScene = true;
+                PhotonNetwork.JoinRandomRoom();
             }
         }
 
         public override void OnDisconnected (DisconnectCause cause) {
             progressLabel.SetActive (false);
             controlPanel.SetActive (true);
+            lobbyUI.SetActive(false);
+            
+            if (PhotonNetwork.IsMasterClient && PhotonNetwork.InRoom)
+            {
+                var hostButton = GameObject.Find("PlayerLobby/Canvas/HostStartButton");
+                hostButton.SetActive(false);
+            } else {
+                var playerButton = GameObject.Find("PlayerLobby/Canvas/PlayerLeaveButton");
+                playerButton.SetActive(false);
+            }
 
             isConnecting = false;
 
@@ -84,12 +108,60 @@ namespace com.RoboticBanana.MoonBounce {
             Debug.Log ("Joined room called, now we're in a room");
 
             Debug.LogFormat ("Joined room with id {0}", PhotonNetwork.CurrentRoom.Name);
-
-            PhotonNetwork.LoadLevel ("GudgePlayground");
-
+            Debug.LogFormat("Player List Count: {0}", PhotonNetwork.PlayerList.Length);
+            if (PhotonNetwork.IsMasterClient && PhotonNetwork.InRoom)
+            {
+                var hostButton = GameObject.Find("PlayerLobby/Canvas/HostStartButton");
+                if (!hostButton.activeSelf)
+                {
+                    hostButton.SetActive(true);
+                    JoinTeam();
+                }
+            } else
+            {
+                PhotonNetwork.CurrentRoom.AddPlayer(PhotonNetwork.LocalPlayer);
+                var playerButton = GameObject.Find("PlayerLobby/Canvas/PlayerLeaveButton");
+                if (!playerButton.activeSelf)
+                {
+                    playerButton.SetActive(true);
+                    JoinTeam();
+                }
+            }
         }
 
         #endregion
 
+        public void StartGame()
+        {
+            PhotonNetwork.LoadLevel("GudgePlayground");
+        }
+        
+
+
+        private void JoinTeam()
+        {
+            var playerList = this.playerList.GetComponent<PlayerListController>().playersList;
+            var alliesPanel = GameObject.Find("AlliesPanel");
+            var axisPanel = GameObject.Find("AxisPanel");
+
+
+            foreach (var player in playerList)
+            {
+                Debug.LogFormat("Player Name Start: {0}", player.transform.Find("PlayerName").GetComponent<Text>().text);
+
+                if (player.transform.Find("PlayerName").GetComponent<Text>().text.Length == 0)
+                {
+                    Debug.LogFormat("Player Name: {0}", PhotonNetwork.LocalPlayer.NickName);
+                    player.transform.Find("PlayerName").GetComponent<Text>().text = PhotonNetwork.LocalPlayer.NickName;
+                    GameObject obj = Instantiate(player);
+                    obj.GetComponent<RectTransform>().anchoredPosition =
+                        alliesPanel.transform.Find("Player Panel Box").transform.position;
+
+                    obj.transform.SetParent(alliesPanel.transform);
+                    Debug.LogFormat("Set PlayerName: {0}", player.transform.Find("PlayerName").GetComponent<Text>().text);
+                    break;
+                }
+            }
+        }
     }
 }
